@@ -91,12 +91,12 @@ public class GameController {
 
     // TODO Assignment A3
     public void turnRight(@NotNull Player player) {
-        player.setHeading(player.getHeading().next());
+        player.setHeading(player.getHeading().prev());
     }
 
     // TODO Assignment A3
     public void turnLeft(@NotNull Player player) {
-        player.setHeading(player.getHeading().prev());
+        player.setHeading(player.getHeading().next());
     }
 
     void moveToSpace(@NotNull Player player, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
