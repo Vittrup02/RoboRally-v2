@@ -123,6 +123,19 @@ public class GameController {
 
     public void moveCurrentPlayerToSpace(Space space) {
         // TODO: Import or Implement this method. This method is only for debugging purposes. Not useful for the game.
+        if(space.getPlayer() == null){
+            Player curent;
+            space.setPlayer(space.board.getCurrentPlayer());
+            int playerNumber = space.board.getPlayerNumber(space.board.getCurrentPlayer())+1;
+            if(playerNumber >= space.board.getPlayersNumber()){
+                curent = space.board.getPlayer(0);
+            }
+            else {
+                curent = space.board.getPlayer(playerNumber);
+            }
+            space.board.setCurrentPlayer(curent);
+
+        }
     }
 
     private void makeProgramFieldsVisible(int register) {
