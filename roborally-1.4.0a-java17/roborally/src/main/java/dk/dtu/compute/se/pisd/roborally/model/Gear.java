@@ -1,11 +1,13 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 
-public class Gear {
+public class Gear extends FieldAction {
     public Direction direction;
 
     public void setDirection(Direction direction) {
+
         this.direction = direction;
     }
 
@@ -14,7 +16,8 @@ public class Gear {
         this.direction = direction;
     }
 
-    public boolean setDirection(GameController gC, Space space) {
+    @Override
+    public boolean doAction(GameController gC, Space space) {
         Player player = space.getPlayer();
 
         switch (direction) {
