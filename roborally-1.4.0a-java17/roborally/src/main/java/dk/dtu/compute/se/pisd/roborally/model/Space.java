@@ -88,6 +88,13 @@ public class Space extends Subject {
         return walls;
     }
 
+    public void addWall (Heading heading){
+        if(!walls.contains(heading)){
+            walls.add(heading);
+            notifyChange();
+        }
+    }
+
     public List<FieldAction> getActions() {
         return actions;
     }
