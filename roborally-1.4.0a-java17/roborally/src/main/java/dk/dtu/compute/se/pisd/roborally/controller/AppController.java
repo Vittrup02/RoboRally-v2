@@ -40,6 +40,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard.loadBoard;
+
 /**
  * ...
  *
@@ -59,7 +61,7 @@ public class AppController implements Observer {
         this.roboRally = roboRally;
     }
 
-    public void newGame() {
+    public void newGame(String boardname) {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
@@ -76,7 +78,7 @@ public class AppController implements Observer {
 
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
-            Board board = new Board(8,8);
+            Board board = loadBoard(boardname);
             gameController = new GameController(board);
             int no = result.get();
             for (int i = 0; i < no; i++) {
@@ -101,7 +103,7 @@ public class AppController implements Observer {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
         if (gameController == null) {
-            newGame();
+            newGame("defaultboard");
         }
     }
 
