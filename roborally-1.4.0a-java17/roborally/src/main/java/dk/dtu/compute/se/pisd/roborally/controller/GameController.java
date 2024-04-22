@@ -22,6 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import org.jetbrains.annotations.NotNull;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -282,6 +284,18 @@ public class GameController {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
+    }
+
+    // Ikke fungerende endnu, vises ikke på boardet, skal finde den rigtige måde at kalde på den
+    public void Laser(@NotNull Player player) {
+        Heading heading = player.getHeading();
+        int x = player.getSpace().getX();
+        int y = player.getSpace().getY();
+
+        Line laser = new Line(x, y, 50, 50);
+        laser.setStroke(Color.RED);
+        laser.setStrokeWidth(5);
+
     }
 
     /**
