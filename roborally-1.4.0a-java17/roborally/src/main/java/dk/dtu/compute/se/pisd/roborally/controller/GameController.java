@@ -262,6 +262,7 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+        Line laser = Laser();
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
@@ -286,15 +287,37 @@ public class GameController {
         return new CommandCard(commands[random]);
     }
 
+    /**
+     * @author Amalie Bojsen
+     * Creating the laser, so that it can be called on after execution of the program
+     * Uses the players position, and heading to shoot the laser from player position to end of board, in direction it's heading
+     */
     // Ikke fungerende endnu, vises ikke på boardet, skal finde den rigtige måde at kalde på den
-    public void Laser(@NotNull Player player) {
+    public Line Laser() {
+        Player player = board.getCurrentPlayer();
         Heading heading = player.getHeading();
         int x = player.getSpace().getX();
         int y = player.getSpace().getY();
+        int a = board.getWidth();
+        int b = board.getHeight();
 
-        Line laser = new Line(x, y, 50, 50);
+        if (heading == Heading.SOUTH) {
+            a = x;
+        } else if (heading == Heading.EAST) {
+            b = y;
+        } else if (heading == Heading.NORTH) {
+            b = y;
+            a = 0;
+        } else {
+            a = x;
+            b = 0;
+        }
+
+        Line laser = new Line(x, y, a, b);
         laser.setStroke(Color.RED);
         laser.setStrokeWidth(5);
+
+        return laser;
 
     }
 
