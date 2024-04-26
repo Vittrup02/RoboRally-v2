@@ -1,12 +1,18 @@
 package dk.dtu.compute.se.pisd.roborally.model;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-
+/**
+ * Enum for representing different types of damage cards.
+ *@author Aisha Farah Mohamud s235123
+ */
 public enum DamageCard {
     SPAM_DAMAGE,
     VIRUS_DAMAGE,
     TROJAN_HORSE_DAMAGE,
     WORM_DAMAGE;
 
+    /**
+     * Applies the damage effect of the card to the given player.
+     * @param player The player to apply the damage effect to.
+     */
     public void applyDamage(Player player) {
         switch(this) {
             case SPAM_DAMAGE:
@@ -26,7 +32,7 @@ public enum DamageCard {
 
         }
     }
-// methods not yet imlempented
+// methods not implemented 
     private void applyWormDamage(Player player) {
 
     }
