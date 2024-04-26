@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 public class LoadBoard {
 
     private static final String BOARDSFOLDER = "boards";
-    private static final String DEFAULTBOARD = "defaultboard";
+    private static final String DEFAULTBOARD = "Optional[Hey]";
     private static final String JSON_EXT = "json";
 
     public static Board loadBoard(String boardname) {
@@ -59,7 +59,7 @@ public class LoadBoard {
         ClassLoader classLoader = LoadBoard.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + boardname + "." + JSON_EXT);
         if (inputStream == null) {
-            inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + "defaultboard" + "." + JSON_EXT);
+            inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + "Optional[Hey]" + "." + JSON_EXT);
         }
 
 		// In simple cases, we can create a Gson object with new Gson():
@@ -83,6 +83,10 @@ public class LoadBoard {
                     space.getWalls().addAll(spaceTemplate.walls);
                 }
             }
+            result.setPhase(template.phase);
+            PlayerTemplate playerTemplate = gson.fromJson(reader, PlayerTemplate.class);
+            loadPlayer(result, playerTemplate);
+
 			reader.close();
 			return result;
 		} catch (IOException e1) {
@@ -100,6 +104,39 @@ public class LoadBoard {
 		}
 		return null;
     }
+
+    public static void loadPlayer(Board bordResult, PlayerTemplate template){
+        Player player = new Player(bordResult, template.color, template.name);
+        int x = template.x;
+        int y = template.y;
+        if(x >= 0 && y >= 0 && x<bordResult.width && y<bordResult.height){
+            Space space = bordResult.getSpace(x,y);
+            if (space != null){
+                player.setSpace(space);
+                bordResult.addPlayer(player);
+            }
+        }
+        loadCommandCards(player, template.commandCards);
+        loadProgrammingCards(player, template.programmingCards);
+    }
+
+    public static  void  loadCommandCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplate){
+        for (int i = 0; i < commandCardFieldTemplate.size(); i++) {
+            CommandCardField commandCardField = new CommandCardField(player);
+            commandCardField.setCard(commandCardFieldTemplate.get(i).card);
+            commandCardField.setVisible(commandCardFieldTemplate.get(i).visible);
+        }
+    }
+
+    public static void loadProgrammingCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplates){
+        for (int i = 0; i < commandCardFieldTemplates.size(); i++) {
+            CommandCardField commandCardField = new CommandCardField(player);
+            commandCardField.setCard(commandCardFieldTemplates.get(i).card);
+            commandCardField.setVisible(commandCardFieldTemplates.get(i).visible);
+        }
+    }
+
+
 
     public static void saveBoard(Board board, String name) {
         BoardTemplate template = new BoardTemplate();
