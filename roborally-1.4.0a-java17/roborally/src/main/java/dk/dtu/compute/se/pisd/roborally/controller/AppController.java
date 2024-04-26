@@ -77,7 +77,7 @@ public class AppController implements Observer {
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
 
-        if (boardname.isPresent()) {
+        if (result.isPresent()) {
             if (gameController != null) {
                 // The UI should not allow this, but in case this happens anyway.
                 // give the user the option to save the game or abort this operation!
@@ -124,9 +124,11 @@ public class AppController implements Observer {
     public void loadGame() {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
-        if (gameController == null) {
-            newGame();
-        }
+        Board board = loadBoard("Optional[Hey]");
+        gameController = new GameController(board);
+
+
+        roboRally.createBoardView(gameController);
     }
 
     /**

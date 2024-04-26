@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.model.BoardTemplate;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.model.CommandCardFieldTemplate;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.model.PlayerTemplate;
@@ -84,10 +85,12 @@ public class LoadBoard {
                 }
             }
             result.setPhase(template.phase);
-            PlayerTemplate playerTemplate = gson.fromJson(reader, PlayerTemplate.class);
-            loadPlayer(result, playerTemplate);
+            for (int i = 0; i<template.players.size(); i++) {
+                loadPlayer(result, template.players.get(i));
+            }
+            result.setCurrentPlayer(result.getPlayer(template.current));
+            reader.close();
 
-			reader.close();
 			return result;
 		} catch (IOException e1) {
             if (reader != null) {
@@ -102,6 +105,7 @@ public class LoadBoard {
 				} catch (IOException e2) {}
 			}
 		}
+
 		return null;
     }
 
@@ -143,6 +147,7 @@ public class LoadBoard {
         template.width = board.width;
         template.height = board.height;
         template.phase = board.getPhase();
+        template.current = board.getPlayerNumber(board.getCurrentPlayer());
 
         for (int i=0; i<board.width; i++) {
             for (int j=0; j<board.height; j++) {
