@@ -39,6 +39,7 @@ public class Player extends Subject {
 
     final public Board board;
 
+
     private String name;
     private String color;
 
@@ -64,6 +65,7 @@ public class Player extends Subject {
         for (int i = 0; i < cards.length; i++) {
             cards[i] = new CommandCardField(this);
         }
+
     }
 
     public String getName() {
