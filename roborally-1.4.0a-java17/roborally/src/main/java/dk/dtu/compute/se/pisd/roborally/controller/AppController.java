@@ -38,6 +38,12 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +61,9 @@ public class AppController implements Observer {
     final private List<Integer> PLAYER_NUMBER_OPTIONS = Arrays.asList(2, 3, 4, 5, 6);
     final private List<String> PLAYER_COLORS = Arrays.asList("red", "green", "blue", "orange", "grey", "magenta");
 
-    final private List<String> Game_Bord = Arrays.asList("defaultboard","Optional[Hey]",  "STARTER COURSE: DIZZY HIGHWAY", "RISKY CROSSING", "HIGH OCTANE", "SPRINT CRAMP", "CORRIDOR BLITZ", "FRACTIONATION", "BURNOUT", "LOST BEARINGS", "PASSING LANE", "TWISTER", "DODGE THIS", "CHOP SHOP CHALLENGE", "UNDERTOW", "HEAVY MERGE AREA", "DEATH TRAP", "PILGRIMAGE", "GEAR STRIPPER", "EXTRA CRISPY", "BURN RUN");
+    final private List<String> Game_Bord = Arrays.asList("defaultboard", "STARTER COURSE: DIZZY HIGHWAY", "RISKY CROSSING", "HIGH OCTANE", "SPRINT CRAMP", "CORRIDOR BLITZ", "FRACTIONATION", "BURNOUT", "LOST BEARINGS", "PASSING LANE", "TWISTER", "DODGE THIS", "CHOP SHOP CHALLENGE", "UNDERTOW", "HEAVY MERGE AREA", "DEATH TRAP", "PILGRIMAGE", "GEAR STRIPPER", "EXTRA CRISPY", "BURN RUN");
+
+    private  List<String> Saved_Bord = new ArrayList<>();
 
     final private RoboRally roboRally;
 
@@ -117,18 +125,40 @@ public class AppController implements Observer {
 
         Optional<String> result = dialog.showAndWait();
         if(result.isPresent()){
-            LoadBoard.saveBoard(gameController.board, result.toString());
+            LoadBoard.saveBoard(gameController.board, result.get());
         }
     }
 
     public void loadGame() {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
-        Board board = loadBoard("Optional[Hey]");
-        gameController = new GameController(board);
+        String dirkteryPath = "roborally-1.4.0a-java17/roborally/src/main/resources/boards/games";
 
+        Path dirktery = Paths.get(dirkteryPath);
 
-        roboRally.createBoardView(gameController);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirktery)) {
+
+            //with forEach loop get all the path of files present in directory
+            for (Path file : stream){
+                String fileString = file.getFileName().toString();
+                String fileName = fileString.substring(0, fileString.lastIndexOf("."));
+                Saved_Bord.add(fileName);
+            }
+            ChoiceDialog<String> saveGames = new ChoiceDialog<>(Saved_Bord.get(0),Saved_Bord);
+            saveGames.setTitle("");
+            saveGames.setHeaderText("select your saved game");
+            Optional<String> boardname = saveGames.showAndWait();
+            String boardsname = boardname.get();
+
+            Board board = loadBoard("games/" +boardsname);
+            gameController = new GameController(board);
+
+            roboRally.createBoardView(gameController);
+
+        }
+        catch (IOException e1){
+            System.out.println("Error");
+        }
     }
 
     /**
