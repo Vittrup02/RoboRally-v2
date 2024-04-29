@@ -40,6 +40,10 @@ public class ConveyorBelt extends FieldAction {
         this.movement = (type == BeltType.GREEN) ? 1 : 2;  // Update movement when belt type changes
     }
 
+    public int getMovement() {
+        return movement;
+    }
+
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {
         if (space == null || gameController == null) return false;
@@ -78,6 +82,7 @@ public class ConveyorBelt extends FieldAction {
 
         // Move the player to the new position
         player.setSpace(space);
+
         return true;
     }
 }

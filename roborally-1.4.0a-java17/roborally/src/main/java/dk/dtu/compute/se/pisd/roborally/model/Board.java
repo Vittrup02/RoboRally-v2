@@ -122,6 +122,8 @@ public class Board extends Subject {
         return current;
     }
 
+
+
     public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
             this.current = player;
@@ -168,6 +170,10 @@ public class Board extends Subject {
         } else {
             return -1;
         }
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
     /**
