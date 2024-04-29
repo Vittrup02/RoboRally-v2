@@ -22,6 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import org.jetbrains.annotations.NotNull;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -123,6 +125,19 @@ public class GameController {
 
     public void moveCurrentPlayerToSpace(Space space) {
         // TODO: Import or Implement this method. This method is only for debugging purposes. Not useful for the game.
+        if(space.getPlayer() == null){
+            Player curent;
+            space.setPlayer(space.board.getCurrentPlayer());
+            int playerNumber = space.board.getPlayerNumber(space.board.getCurrentPlayer())+1;
+            if(playerNumber >= space.board.getPlayersNumber()){
+                curent = space.board.getPlayer(0);
+            }
+            else {
+                curent = space.board.getPlayer(playerNumber);
+            }
+            space.board.setCurrentPlayer(curent);
+
+        }
     }
 
     private void makeProgramFieldsVisible(int register) {
@@ -247,6 +262,7 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+        Line laser = Laser();
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
@@ -269,6 +285,40 @@ public class GameController {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
+    }
+
+    /**
+     * @author Amalie Bojsen
+     * Creating the laser, so that it can be called on after execution of the program
+     * Uses the players position, and heading to shoot the laser from player position to end of board, in direction it's heading
+     */
+    // Ikke fungerende endnu, vises ikke på boardet, skal finde den rigtige måde at kalde på den
+    public Line Laser() {
+        Player player = board.getCurrentPlayer();
+        Heading heading = player.getHeading();
+        int x = player.getSpace().getX();
+        int y = player.getSpace().getY();
+        int a = board.getWidth();
+        int b = board.getHeight();
+
+        if (heading == Heading.SOUTH) {
+            a = x;
+        } else if (heading == Heading.EAST) {
+            b = y;
+        } else if (heading == Heading.NORTH) {
+            b = y;
+            a = 0;
+        } else {
+            a = x;
+            b = 0;
+        }
+
+        Line laser = new Line(x, y, a, b);
+        laser.setStroke(Color.RED);
+        laser.setStrokeWidth(5);
+
+        return laser;
+
     }
 
     /**
