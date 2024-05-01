@@ -1,16 +1,14 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
-
 public class DamageCard extends CommandCard {
-    private DamageCard damageType;
+    private DamageType damageType;  // Correct type from DamageCard to DamageType
 
-    public DamageCard(Command command, DamageCard damageType) {
+    public DamageCard(Command command, DamageType damageType) {
         super(command);
         this.damageType = damageType;
     }
 
-    public DamageCard getDamageType() {
+    public DamageType getDamageType() {
         return damageType;
     }
 }
-

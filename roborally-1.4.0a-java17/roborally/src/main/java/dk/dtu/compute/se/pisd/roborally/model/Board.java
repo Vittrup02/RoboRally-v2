@@ -29,6 +29,7 @@ import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
+
 /**
  * ...
  *
@@ -222,4 +223,16 @@ public class Board extends Subject {
 
         return "";
     }
+    public Space getPlayerStartingPoint() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Space space = spaces[x][y];
+                if (space.getPlayer() != null && space.getPlayer().equals(player)) {
+                    return space;
+                }
+            }
+        }
+        return null; // Player's starting point not found
+    }
+
 }

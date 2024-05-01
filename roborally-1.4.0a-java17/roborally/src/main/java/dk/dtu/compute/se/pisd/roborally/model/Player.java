@@ -24,6 +24,8 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
@@ -38,6 +40,8 @@ public class Player extends Subject {
     final public static int NO_CARDS = 8;
 
     final public Board board;
+    private List<CommandCard> programmingDeck;
+    private List<CommandCard> discardPile;
 
 
     private String name;
@@ -133,6 +137,22 @@ public class Player extends Subject {
 
     public CommandCardField getCardField(int i) {
         return cards[i];
+    }
+
+    public List<CommandCard> getProgrammingDeck() {
+        return programmingDeck;
+    }
+
+    public void setProgrammingDeck(List<CommandCard> programmingDeck) {
+        this.programmingDeck = programmingDeck;
+    }
+
+    public List<CommandCard> getDiscardPile() {
+        return discardPile;
+    }
+
+    public void setDiscardPile(List<CommandCard> discardPile) {
+        this.discardPile = discardPile;
     }
 
 }

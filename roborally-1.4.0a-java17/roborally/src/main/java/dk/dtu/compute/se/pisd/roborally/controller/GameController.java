@@ -29,6 +29,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -45,7 +46,6 @@ public class GameController {
     public GameController(Board board) {
         this.board = board;
     }
-
 
 
     public void moveForward(@NotNull Player player) {
@@ -104,7 +104,7 @@ public class GameController {
     void moveToSpace(@NotNull Player player, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
         assert board.getNeighbour(player.getSpace(), heading) == space; // make sure the move to here is possible in principle
         Player other = space.getPlayer();
-        if (other != null){
+        if (other != null) {
             Space target = board.getNeighbour(space, heading);
             if (target != null) {
                 // XXX Note that there might be additional problems with
@@ -125,14 +125,13 @@ public class GameController {
 
     public void moveCurrentPlayerToSpace(Space space) {
         // TODO: Import or Implement this method. This method is only for debugging purposes. Not useful for the game.
-        if(space.getPlayer() == null){
+        if (space.getPlayer() == null) {
             Player curent;
             space.setPlayer(space.board.getCurrentPlayer());
-            int playerNumber = space.board.getPlayerNumber(space.board.getCurrentPlayer())+1;
-            if(playerNumber >= space.board.getPlayersNumber()){
+            int playerNumber = space.board.getPlayerNumber(space.board.getCurrentPlayer()) + 1;
+            if (playerNumber >= space.board.getPlayersNumber()) {
                 curent = space.board.getPlayer(0);
-            }
-            else {
+            } else {
                 curent = space.board.getPlayer(playerNumber);
             }
             space.board.setCurrentPlayer(curent);
@@ -239,6 +238,10 @@ public class GameController {
                 case OPTION_LEFT_RIGHT:
                     this.leftOrRight(player);
                     break;
+                case DAMAGE_CARD:
+                    applyDamageEffects(player);
+                    break;
+
                 default:
                     // DO NOTHING (for now)
             }
@@ -343,7 +346,73 @@ public class GameController {
             this.space = space;
             this.heading = heading;
         }
+
+        private DamageCard generateRandomDamageCard() {
+            DamageType[] damageTypes = DamageType.values();
+            int index = new Random().nextInt(damageTypes.length);
+            return new DamageCard(Command.DAMAGE_CARD, damageTypes[index]);
+        }
+
+        public void playDamageCardFromRegister(Player player, int registerIndex) {
+            DamageCard card = (DamageCard) player.getProgramField(registerIndex).getCard();
+            applyDamageEffects(player);
+            discardAndDrawNewCard(player, registerIndex);
+        }
+
+        private void applyDamageEffects(Player player) {
+            System.out.println("Applying effects to " + player.getName());
+
+            switch (generateRandomDamageCard().getDamageType()) {
+                case SPAM:
+                    System.out.println("SPAM card played. Minor disruption to " + player.getName()); //method not implemented yet
+                    break;
+                case WORM:
+                    rebootPlayer(player);
+                    break;
+                case TROJAN_HORSE:
+                    giveAdditionalDamageCards(player, DamageType.SPAM, 2);
+                    break;
+                case VIRUS:
+                    spreadVirusDamage(player);
+                    break;
+            }
+        }
+
+        private void rebootPlayer(Player player) {
+            player.setSpace(board.getPlayerStartingPoint());
+            System.out.println("Player " + player.getName() + " is rebooted to starting position.");
+        }
+
+        private void giveAdditionalDamageCards(Player player, DamageType type, int count) {
+            for (int i = 0; i < count; i++) {
+                player.getDiscardPile().add(new DamageCard(Command.DAMAGE_CARD, type));
+            }
+        }
+
+        private void spreadVirusDamage(Player source) {
+            for (Player player : board.getPlayers()) {
+                if (player != source && isWithinRadius(source.getSpace(), player.getSpace(), 6)) {
+                    player.getDiscardPile().add(new DamageCard(Command.DAMAGE_CARD, DamageType.VIRUS));
+                }
+            }
+        }
+
+        private boolean isWithinRadius(Space source, Space target, int radius) {
+            int dx = Math.abs(source.getX() - target.getX());
+            int dy = Math.abs(source.getY() - target.getY());
+            return Math.sqrt(dx * dx + dy * dy) <= radius;
+        }
+
+        private void discardAndDrawNewCard(Player player, int registerIndex) {
+            CommandCard card = player.getProgramField(registerIndex).getCard();
+            player.getDiscardPile().add(card);
+            player.getProgramField(registerIndex).setCard(null);
+            if (!player.getProgrammingDeck().isEmpty()) {
+                CommandCard newCard = player.getProgrammingDeck().remove(0);
+                player.getProgramField(registerIndex).setCard(newCard);
+            } else {
+                System.out.println("No cards left in the deck for " + player.getName());
+            }
+        }
     }
-
-
 }
