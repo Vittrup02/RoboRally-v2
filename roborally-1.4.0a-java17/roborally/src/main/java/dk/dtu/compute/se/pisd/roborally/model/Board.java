@@ -55,6 +55,16 @@ public class Board extends Subject {
 
     private boolean stepMode;
 
+    private laser Laser;
+
+    public Laser getLaser() {
+        return laser;
+    }
+
+    public void setLaser(Laser laser) {
+        this.laser = laser;
+    }
+
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
@@ -221,5 +231,13 @@ public class Board extends Subject {
     public String getStatusMessage() {
 
         return "";
+    }
+
+
+    // Activates the players lasers - needs to be called somewhere
+    private void activatePlayerLaser(){
+        for(int i = 0; i < board.getPlayersNumber(); i++){
+            controller.shootLaser(board.getPlayer(i));
+        }
     }
 }
