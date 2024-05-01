@@ -202,11 +202,39 @@ public class GameController {
         }
     }
 
+    // U-Turn method
+    private void uTurn(@NotNull Player player) {
+        player.setHeading(player.getHeading().next().next());  // Rotate 180 degrees
+    }
+
+    // Method to move the player one space back without changing direction
+    private void backUp(@NotNull Player player) {
+        Space currentSpace = player.getSpace();
+        Heading oppositeHeading = player.getHeading().prev().prev(); // 180 degrees to move back
+        Space targetSpace = board.getNeighbour(currentSpace, oppositeHeading);
+
+        if (targetSpace != null && !targetSpace.getWalls().contains(oppositeHeading)) {
+            try {
+                moveToSpace(player, targetSpace, oppositeHeading);
+            } catch (ImpossibleMoveException e) {
+                // Handle exception if the move is not possible
+            }
+        }
+    }
+
+    // Method to add one energy cube to the player's mat
+    private void powerUp(@NotNull Player player) {
+        player.addEnergyCube();  // Increment the energy cubes
+    }
+
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
             //     their execution. This should eventually be done in a more elegant way
             //     (this concerns the way cards are modelled as well as the way they are executed).
+            if (command != Command.AGAIN) {
+                player.setLastCommand(command);
+            }
 
             switch (command) {
                 case FORWARD:
@@ -224,9 +252,30 @@ public class GameController {
                 case OPTION_LEFT_RIGHT:
                     this.leftOrRight(player);
                     break;
+                case U_TURN:
+                    this.uTurn(player);
+                    break;
+                case BACK_UP:
+                    this.backUp(player);
+                    break;
+                case POWER_UP:
+                    this.powerUp(player);
+                    break;
+                case AGAIN:
+                    this.executeAgain(player);
+                    break;
                 default:
                     // DO NOTHING (for now)
             }
+        }
+    }
+
+    private void executeAgain(@NotNull Player player) {
+        Command lastCommand = player.getLastCommand();
+        if (lastCommand != null) {
+            executeCommand(player, lastCommand);
+        } else {
+            System.out.println("No previous command to repeat or not allowed!");
         }
     }
 
