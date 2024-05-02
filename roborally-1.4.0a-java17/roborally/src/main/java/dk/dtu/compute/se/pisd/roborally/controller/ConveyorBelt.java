@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConveyorBelt extends FieldAction {
 
-    private enum BeltType {
+    public enum BeltType {
         GREEN,  // Moves the robot one space
         BLUE    // Moves the robot two spaces
     }

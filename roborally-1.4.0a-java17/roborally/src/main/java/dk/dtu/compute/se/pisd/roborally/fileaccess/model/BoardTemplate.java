@@ -21,6 +21,9 @@
  */
 package dk.dtu.compute.se.pisd.roborally.fileaccess.model;
 
+import dk.dtu.compute.se.pisd.roborally.model.Phase;
+import dk.dtu.compute.se.pisd.roborally.model.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,7 @@ import java.util.List;
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
+ * @author Rebecca Moss, s225042@dtu.dk
  *
  */
 public class BoardTemplate {
@@ -36,6 +40,12 @@ public class BoardTemplate {
     public int width;
     public int height;
 
+    public Phase phase;
+
+    public int current;
+
     public List<SpaceTemplate> spaces = new ArrayList<>();
+
+    public List<PlayerTemplate> players = new ArrayList<>();
 
 }

@@ -21,17 +21,25 @@
  */
 package dk.dtu.compute.se.pisd.roborally.fileaccess;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.model.BoardTemplate;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.model.CommandCardFieldTemplate;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.model.PlayerTemplate;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.model.SpaceTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
-import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ...
@@ -41,7 +49,7 @@ import java.io.*;
 public class LoadBoard {
 
     private static final String BOARDSFOLDER = "boards";
-    private static final String DEFAULTBOARD = "defaultboard";
+    private static final String DEFAULTBOARD = "Optional[Hey]";
     private static final String JSON_EXT = "json";
 
     public static Board loadBoard(String boardname) {
@@ -52,8 +60,7 @@ public class LoadBoard {
         ClassLoader classLoader = LoadBoard.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + boardname + "." + JSON_EXT);
         if (inputStream == null) {
-            // TODO these constants should be defined somewhere
-            return new Board(8,8);
+            inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + "Optional[Hey]" + "." + JSON_EXT);
         }
 
 		// In simple cases, we can create a Gson object with new Gson():
@@ -77,7 +84,13 @@ public class LoadBoard {
                     space.getWalls().addAll(spaceTemplate.walls);
                 }
             }
-			reader.close();
+            result.setPhase(template.phase);
+            for (int i = 0; i<template.players.size(); i++) {
+                loadPlayer(result, template.players.get(i));
+            }
+            result.setCurrentPlayer(result.getPlayer(template.current));
+            reader.close();
+
 			return result;
 		} catch (IOException e1) {
             if (reader != null) {
@@ -92,13 +105,73 @@ public class LoadBoard {
 				} catch (IOException e2) {}
 			}
 		}
+
 		return null;
     }
+    /**
+    @author Rebecca Moss, s225042@dtu.dk
+    @param bordResult (type Board)
+    @param template (type PlayerTemplate)
+    */
+    public static void loadPlayer(Board bordResult, PlayerTemplate template){
+        Player player = new Player(bordResult, template.color, template.name);
+        int x = template.x;
+        int y = template.y;
+        if(x >= 0 && y >= 0 && x<bordResult.width && y<bordResult.height){
+            Space space = bordResult.getSpace(x,y);
+            if (space != null){
+                player.setSpace(space);
+                bordResult.addPlayer(player);
+            }
+        }
 
+        loadCommandCards(player, template.commandCards);
+        loadProgrammingCards(player, template.programmingCards);
+    }
+
+    /**
+     @author Rebecca Moss, s225042@dtu.dk
+     @param player (type Player)
+     @param commandCardFieldTemplate (type List<CommandCardFieldTemplate>)
+     */
+    public static  void  loadCommandCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplate){
+        for (int i = 0; i < commandCardFieldTemplate.size(); i++) {
+
+            CommandCardField commandCardField = player.getCardField(i);
+            commandCardField.setCard(commandCardFieldTemplate.get(i).card);
+            commandCardField.setVisible(commandCardFieldTemplate.get(i).visible);
+
+            player.getCardField(i);
+        }
+    }
+
+    /**
+     @author Rebecca Moss, s225042@dtu.dk
+     @param player (type Player)
+     @param commandCardFieldTemplates (type List<CommandCardFieldTemplate>)
+     */
+    public static void loadProgrammingCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplates){
+        for (int i = 0; i < commandCardFieldTemplates.size(); i++) {
+            CommandCardField commandCardField = player.getProgramField(i);
+            commandCardField.setCard(commandCardFieldTemplates.get(i).card);
+            commandCardField.setVisible(commandCardFieldTemplates.get(i).visible);
+
+        }
+    }
+
+
+
+    /**
+     @author Rebecca Moss, s225042@dtu.dk
+     @param board (type Board)
+     @param name (type name)
+     */
     public static void saveBoard(Board board, String name) {
         BoardTemplate template = new BoardTemplate();
         template.width = board.width;
         template.height = board.height;
+        template.phase = board.getPhase();
+        template.current = board.getPlayerNumber(board.getCurrentPlayer());
 
         for (int i=0; i<board.width; i++) {
             for (int j=0; j<board.height; j++) {
@@ -114,12 +187,16 @@ public class LoadBoard {
             }
         }
 
+        for (Player player : board.getPlayers()) {
+            template.players.add(new PlayerTemplate(player));
+        }
+
         ClassLoader classLoader = LoadBoard.class.getClassLoader();
         // TODO: this is not very defensive, and will result in a NullPointerException
         //       when the folder "resources" does not exist! But, it does not need
         //       the file "simpleCards.json" to exist!
         String filename =
-                classLoader.getResource(BOARDSFOLDER).getPath() + "/" + name + "." + JSON_EXT;
+                "roborally-1.4.0a-java17/roborally/src/main/resources/boards/games" + "/" + name + "." + JSON_EXT;
 
         // In simple cases, we can create a Gson object with new:
         //

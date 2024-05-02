@@ -22,6 +22,8 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -59,7 +61,26 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
-        if ((space.x + space.y) % 2 == 0) {
+        boolean hasGreenBelt = false;
+        boolean hasBlueBelt = false;
+
+        // Check if space has a ConveyorBelt action
+        for (FieldAction action : space.getActions()) {
+            if (action instanceof ConveyorBelt) {
+                ConveyorBelt conveyorBelt = (ConveyorBelt) action;
+                if (conveyorBelt.getType() == ConveyorBelt.BeltType.GREEN) {
+                    hasGreenBelt = true;
+                } else if (conveyorBelt.getType() == ConveyorBelt.BeltType.BLUE) {
+                    hasBlueBelt = true;
+                }
+            }
+        }
+
+        if(hasGreenBelt){
+            this.setStyle("-fx-background-color: green;");
+        } else if (hasBlueBelt){
+            this.setStyle("-fx-background-color: blue;");
+        } else if ((space.x + space.y) % 2 == 0) {
             this.setStyle("-fx-background-color: white;");
         } else {
             this.setStyle("-fx-background-color: black;");
