@@ -88,6 +88,14 @@ public class Space extends Subject {
         return walls;
     }
 
+
+    /**
+     * @Author s235074
+     * Add a wall in the given direction to this space.
+     *
+     * @param heading the direction of the wall to be added
+     */
+
     public void addWall (Heading heading){
         if(!walls.contains(heading)){
             walls.add(heading);
