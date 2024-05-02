@@ -262,7 +262,7 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
-        Line laser = Laser();
+        Laser laser = new Laser();
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
@@ -294,7 +294,8 @@ public class GameController {
      */
     public void shootLaser(Player player) {
         Heading heading = player.getHeading();
-        int move;
+        Space laser = player.getSpace();
+        int move = 0;
         boolean end = false;
 
         switch (heading) {
@@ -309,17 +310,17 @@ public class GameController {
                 break;
             case WEST:
                 move = -1;
-                break
+                break;
         }
 
         while(end == false) {
             //skal tjekke om der er en væg, ved dog ikke lige hvad der ligger bag det lige nu
             if (end == false) {
                 //move in one of the four directions
-                if (heading == NORTH || heading == SOUTH) {
+                if (heading == heading.NORTH || heading == heading.SOUTH) {
                     laser = board.getSpace(laser.x, (laser.y + move));
                 }
-                if (heading == EAST || heading == WEST) {
+                if (heading == heading.EAST || heading == heading.WEST) {
                     laser = board.getSpace((laser.x + move), laser.y);
                 }
                 //check for player in the way, and deal damage if they are there

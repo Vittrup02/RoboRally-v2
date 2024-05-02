@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -55,13 +56,18 @@ public class Board extends Subject {
 
     private boolean stepMode;
 
-    private laser Laser;
+    private Laser laser;
+
+    private Board board;
+
+    private GameController controller;
 
     public Laser getLaser() {
         return laser;
     }
 
     public void setLaser(Laser laser) {
+
         this.laser = laser;
     }
 
