@@ -31,6 +31,7 @@ import java.util.List;
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
+ * @author Rebecca Moss, s225042@dtu.dk
  *
  */
 public class SpaceTemplate {

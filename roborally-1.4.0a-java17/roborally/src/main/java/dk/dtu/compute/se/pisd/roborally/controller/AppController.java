@@ -114,6 +114,10 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * @author Rebecca Moss, s225042@gmail.com
+     *
+     */
     public void saveGame() {
         if (gameController == null){
             return; //no game to save
@@ -128,7 +132,10 @@ public class AppController implements Observer {
             LoadBoard.saveBoard(gameController.board, result.get());
         }
     }
-
+    /**
+     * @author Rebecca Moss, s225042@gmail.com
+     *
+     */
     public void loadGame() {
         // XXX needs to be implemented eventually
         // for now, we just create a new game

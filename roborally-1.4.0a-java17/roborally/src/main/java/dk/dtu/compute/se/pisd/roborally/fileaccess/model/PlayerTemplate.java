@@ -7,7 +7,9 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ @author Rebecca Moss, s225042@dtu.dk
+ */
 public class PlayerTemplate {
     public String name;
     public String color;

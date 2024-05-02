@@ -108,7 +108,11 @@ public class LoadBoard {
 
 		return null;
     }
-
+    /**
+    @author Rebecca Moss, s225042@dtu.dk
+    @param bordResult (type Board)
+    @param template (type PlayerTemplate)
+    */
     public static void loadPlayer(Board bordResult, PlayerTemplate template){
         Player player = new Player(bordResult, template.color, template.name);
         int x = template.x;
@@ -124,6 +128,11 @@ public class LoadBoard {
         loadProgrammingCards(player, template.programmingCards);
     }
 
+    /**
+     @author Rebecca Moss, s225042@dtu.dk
+     @param player (type Player)
+     @param commandCardFieldTemplate (type List<CommandCardFieldTemplate>)
+     */
     public static  void  loadCommandCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplate){
         for (int i = 0; i < commandCardFieldTemplate.size(); i++) {
             CommandCardField commandCardField = new CommandCardField(player);
@@ -132,6 +141,11 @@ public class LoadBoard {
         }
     }
 
+    /**
+     @author Rebecca Moss, s225042@dtu.dk
+     @param player (type Player)
+     @param commandCardFieldTemplates (type List<CommandCardFieldTemplate>)
+     */
     public static void loadProgrammingCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplates){
         for (int i = 0; i < commandCardFieldTemplates.size(); i++) {
             CommandCardField commandCardField = new CommandCardField(player);
@@ -142,6 +156,11 @@ public class LoadBoard {
 
 
 
+    /**
+     @author Rebecca Moss, s225042@dtu.dk
+     @param board (type Board)
+     @param name (type name)
+     */
     public static void saveBoard(Board board, String name) {
         BoardTemplate template = new BoardTemplate();
         template.width = board.width;
