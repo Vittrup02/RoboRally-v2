@@ -98,6 +98,12 @@ public class GameController {
     public void turnLeft(@NotNull Player player) {
         player.setHeading(player.getHeading().next());
     }
+// method to move forward 3 times
+    public void fastFastForward(@NotNull Player player) {
+        moveForward(player);
+        moveForward(player);
+        moveForward(player);
+    }
 
     void moveToSpace(@NotNull Player player, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
         assert board.getNeighbour(player.getSpace(), heading) == space; // make sure the move to here is possible in principle
@@ -264,6 +270,8 @@ public class GameController {
                 case AGAIN:
                     this.executeAgain(player);
                     break;
+                case FAST_FAST_FORWARD:
+                    this.fastFastForward(player);
                 default:
                     // DO NOTHING (for now)
             }
