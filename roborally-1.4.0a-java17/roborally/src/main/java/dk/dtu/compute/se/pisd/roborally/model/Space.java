@@ -23,6 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class Space extends Subject {
     private Player player;
 
     private List<Heading> walls = new ArrayList<>();
+    private List <Heading> laserWalls = new ArrayList<>();
     private List<FieldAction> actions = new ArrayList<>();
 
     public final Board board;
@@ -102,6 +104,15 @@ public class Space extends Subject {
             notifyChange();
         }
     }
+
+
+    public void addLaserWall (Heading heading){
+        if(!walls.contains(heading)){
+            walls.add(heading);
+            notifyChange();
+        }
+    }
+
 
     public List<FieldAction> getActions() {
         return actions;
