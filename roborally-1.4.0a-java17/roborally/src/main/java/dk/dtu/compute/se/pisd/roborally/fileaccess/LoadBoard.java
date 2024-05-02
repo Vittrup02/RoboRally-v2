@@ -124,6 +124,7 @@ public class LoadBoard {
                 bordResult.addPlayer(player);
             }
         }
+
         loadCommandCards(player, template.commandCards);
         loadProgrammingCards(player, template.programmingCards);
     }
@@ -135,9 +136,12 @@ public class LoadBoard {
      */
     public static  void  loadCommandCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplate){
         for (int i = 0; i < commandCardFieldTemplate.size(); i++) {
-            CommandCardField commandCardField = new CommandCardField(player);
+
+            CommandCardField commandCardField = player.getCardField(i);
             commandCardField.setCard(commandCardFieldTemplate.get(i).card);
             commandCardField.setVisible(commandCardFieldTemplate.get(i).visible);
+
+            player.getCardField(i);
         }
     }
 
@@ -148,9 +152,10 @@ public class LoadBoard {
      */
     public static void loadProgrammingCards(Player player, List<CommandCardFieldTemplate> commandCardFieldTemplates){
         for (int i = 0; i < commandCardFieldTemplates.size(); i++) {
-            CommandCardField commandCardField = new CommandCardField(player);
+            CommandCardField commandCardField = player.getProgramField(i);
             commandCardField.setCard(commandCardFieldTemplates.get(i).card);
             commandCardField.setVisible(commandCardFieldTemplates.get(i).visible);
+
         }
     }
 
