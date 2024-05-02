@@ -17,6 +17,13 @@ public class ConveyorBelt extends FieldAction {
     private int movement;  // Number of spaces to move; 1 for green, 2 for blue
     private BeltType type;
 
+    /**
+     * @author s235112 Tobias Kolstrup Vittrup
+     * Constructor for the ConveyorBelt class.
+     * @param heading The direction the conveyor belt moves in.
+     * @param type The type of conveyor belt.
+     */
+
     public ConveyorBelt(Heading heading, BeltType type) {
         this.heading = heading;
         this.type = type;
@@ -43,6 +50,15 @@ public class ConveyorBelt extends FieldAction {
     public int getMovement() {
         return movement;
     }
+
+    /**
+     *
+     * @author s235112 Tobias Kolstrup Vittrup
+     * Moves the player on the conveyor belt.
+     * @param gameController The game controller.
+     * @param space The space the player is on.
+     * @return True if the player was moved, false otherwise.
+     */
 
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {

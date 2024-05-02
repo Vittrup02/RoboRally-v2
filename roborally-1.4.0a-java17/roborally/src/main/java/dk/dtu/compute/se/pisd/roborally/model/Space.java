@@ -100,6 +100,10 @@ public class Space extends Subject {
         notifyChange();
     }
 
+    /**
+     * This class is used to add a wall to the space.
+     * @return belt
+     */
     public ConveyorBelt getConveyorBelt() {
 
         ConveyorBelt belt = null;

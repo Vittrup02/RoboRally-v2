@@ -83,6 +83,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Move the player two steps forward.
+     * @param player
+     */
+
     // TODO Assignment A3
     public void fastForward(@NotNull Player player) {
         moveForward(player);
