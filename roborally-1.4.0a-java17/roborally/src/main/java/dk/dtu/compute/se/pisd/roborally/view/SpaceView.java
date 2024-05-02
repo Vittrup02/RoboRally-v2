@@ -119,4 +119,34 @@ public class SpaceView extends StackPane implements ViewObserver {
         }
     }
 
+    public void updateWalls(){
+        Space space = this.space;
+        if(space != null && !space.getWalls().isEmpty()){
+            for (Heading wall : space.getWalls()){
+                switch(wall){
+                    case EAST:
+                        //add logic for wall offset and rotation when board is ready
+                        break;
+
+
+                    case WEST:
+                        // add logic for wall offset and rotation when board is ready
+                        break;
+
+
+                    case SOUTH:
+                        // add logic only for offset, rotation not needed
+                        break;
+
+                    case NORTH:
+                        // add logic for offse, rotation not needed
+                        break;
+                }
+            }
+
+        }
+    }
+
+
+
 }
