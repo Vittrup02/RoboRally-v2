@@ -1,0 +1,45 @@
+Index: roborally-1.4.0a-java17/roborally/src/main/java/dk/dtu/compute/se/pisd/roborally/view/SpaceView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\n *  This file is part of the initial project provided for the\r\n *  course \"Project in Software Development (02362)\" held at\r\n *  DTU Compute at the Technical University of Denmark.\r\n *\r\n *  Copyright (C) 2019, 2020: Ekkart Kindler, ekki@dtu.dk\r\n *\r\n *  This software is free software; you can redistribute it and/or modify\r\n *  it under the terms of the GNU General Public License as published by\r\n *  the Free Software Foundation; version 2 of the License.\r\n *\r\n *  This project is distributed in the hope that it will be useful,\r\n *  but WITHOUT ANY WARRANTY; without even the implied warranty of\r\n *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\r\n *  GNU General Public License for more details.\r\n *\r\n *  You should have received a copy of the GNU General Public License\r\n *  along with this project; if not, write to the Free Software\r\n *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\r\n *\r\n */\r\npackage dk.dtu.compute.se.pisd.roborally.view;\r\n\r\nimport dk.dtu.compute.se.pisd.designpatterns.observer.Subject;\r\nimport dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt;\r\nimport dk.dtu.compute.se.pisd.roborally.controller.FieldAction;\r\nimport dk.dtu.compute.se.pisd.roborally.model.Heading;\r\nimport dk.dtu.compute.se.pisd.roborally.model.Player;\r\nimport dk.dtu.compute.se.pisd.roborally.model.Space;\r\nimport javafx.scene.canvas.Canvas;\r\nimport javafx.scene.canvas.GraphicsContext;\r\nimport javafx.scene.layout.StackPane;\r\nimport javafx.scene.paint.Color;\r\nimport javafx.scene.shape.Polygon;\r\nimport javafx.scene.shape.Rectangle;\r\nimport javafx.scene.shape.StrokeLineCap;\r\nimport org.jetbrains.annotations.NotNull;\r\n\r\n/**\r\n * ...\r\n *\r\n * @author Ekkart Kindler, ekki@dtu.dk\r\n *\r\n */\r\npublic class SpaceView extends StackPane implements ViewObserver {\r\n\r\n    final public static int SPACE_HEIGHT = 60; // 75;\r\n    final public static int SPACE_WIDTH = 60; // 75;\r\n\r\n    public final Space space;\r\n\r\n\r\n    public SpaceView(@NotNull Space space) {\r\n        this.space = space;\r\n\r\n        // XXX the following styling should better be done with styles\r\n        this.setPrefWidth(SPACE_WIDTH);\r\n        this.setMinWidth(SPACE_WIDTH);\r\n        this.setMaxWidth(SPACE_WIDTH);\r\n\r\n        this.setPrefHeight(SPACE_HEIGHT);\r\n        this.setMinHeight(SPACE_HEIGHT);\r\n        this.setMaxHeight(SPACE_HEIGHT);\r\n\r\n       if ((space.x + space.y) % 2 == 0) {\r\n            this.setStyle(\"-fx-background-color: white;\");\r\n        } else {\r\n            this.setStyle(\"-fx-background-color: black;\");\r\n        }\r\n\r\n        // updatePlayer();\r\n\r\n        // This space view should listen to changes of the space\r\n        space.attach(this);\r\n        update(space);\r\n    }\r\n\r\n    private void updatePlayer() {\r\n        Player player = space.getPlayer();\r\n        if (player != null) {\r\n            Polygon arrow = new Polygon(0.0, 0.0,\r\n                    20.0, 40.0,\r\n                    40.0, 0.0);\r\n            try {\r\n                arrow.setFill(Color.valueOf(player.getColor()));\r\n            } catch (Exception e) {\r\n                arrow.setFill(Color.MEDIUMPURPLE);\r\n            }\r\n\r\n            arrow.setRotate((90 * player.getHeading().ordinal()) % 360);\r\n            this.getChildren().add(arrow);\r\n        }\r\n    }\r\n\r\n    /**\r\n     * @author s235112 Tobias Kolstrup Vittrup\r\n     * This function makes the belts visible on the board.\r\n     * The belts are represented by arrows that point in the direction of the belt.\r\n     */\r\n\r\n    private void updateBelt(){\r\n        ConveyorBelt belt = space.getConveyorBelt();\r\n        if (belt != null) {\r\n            Polygon arrow = new Polygon(\r\n                    0.0, 0.0,\r\n                    30.0, 60.0,\r\n                    60.0, 0.0\r\n            );\r\n            arrow.setFill(belt.getType() == ConveyorBelt.BeltType.GREEN ? Color.GREEN : Color.BLUE);\r\n            arrow.setRotate((90 * belt.getHeading().ordinal()) % 360);\r\n\r\n            this.getChildren().add(arrow);\r\n        }\r\n    }\r\n\r\n    /**\r\n     * @author s235112 Tobias Kolstrup Vittrup\r\n     * This function makes the walls visible on the board.\r\n     */\r\n\r\n    private void updateWalls() {\r\n        Space space = this.space;\r\n        if (space != null && !space.getWalls().isEmpty()) {\r\n            for (Heading wall : space.getWalls()) {\r\n                Rectangle wallRect = new Rectangle(70, 5); // Rectangle dimensions\r\n\r\n                // Adjust position based on wall orientation and tile size\r\n                switch (wall) {\r\n                    case EAST:\r\n                        wallRect.setTranslateX(45.0); // Align with right side of the tile\r\n                        wallRect.setTranslateY((90*wall.ordinal()) % 360); // Center vertically in the tile\r\n                        break;\r\n\r\n                    case SOUTH:\r\n                        wallRect.setTranslateY(32.5); // Align with bottom of the tile\r\n                        break;\r\n\r\n                    case WEST:\r\n                        wallRect.setTranslateX(-45.0); // Align with left side of the tile\r\n                        wallRect.setTranslateY((90*wall.ordinal()) % 360); // Center vertically in the tile\r\n                        break;\r\n\r\n                    case NORTH:\r\n                        wallRect.setTranslateY(-32.5); // Align with top of the tile\r\n                        break;\r\n                }\r\n\r\n                wallRect.setFill(Color.ORANGE);\r\n                this.getChildren().add(wallRect); // Assuming 'this' is a container like Group or Pane\r\n            }\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    public void updateView(Subject subject) {\r\n        if (subject == this.space) {\r\n            this.getChildren().clear();\r\n            updateBelt();\r\n            updateWalls();\r\n            updatePlayer();\r\n\r\n        }\r\n    }\r\n\r\n    public void updateWalls(){\r\n        Space space = this.space;\r\n        if(space != null && !space.getWalls().isEmpty()){\r\n            for (Heading wall : space.getWalls()){\r\n                switch(wall){\r\n                    case EAST:\r\n                        //add logic for wall offset and rotation when board is ready\r\n                        break;\r\n\r\n\r\n                    case WEST:\r\n                        // add logic for wall offset and rotation when board is ready\r\n                        break;\r\n\r\n\r\n                    case SOUTH:\r\n                        // add logic only for offset, rotation not needed\r\n                        break;\r\n\r\n                    case NORTH:\r\n                        // add logic for offse, rotation not needed\r\n                        break;\r\n                }\r\n            }\r\n\r\n        }\r\n    }\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/roborally-1.4.0a-java17/roborally/src/main/java/dk/dtu/compute/se/pisd/roborally/view/SpaceView.java b/roborally-1.4.0a-java17/roborally/src/main/java/dk/dtu/compute/se/pisd/roborally/view/SpaceView.java
+--- a/roborally-1.4.0a-java17/roborally/src/main/java/dk/dtu/compute/se/pisd/roborally/view/SpaceView.java	(revision 40ec7e3fd7d8e0d24ba183ae7d4b5973ec0a020a)
++++ b/roborally-1.4.0a-java17/roborally/src/main/java/dk/dtu/compute/se/pisd/roborally/view/SpaceView.java	(date 1714736044011)
+@@ -163,34 +163,4 @@
+         }
+     }
+ 
+-    public void updateWalls(){
+-        Space space = this.space;
+-        if(space != null && !space.getWalls().isEmpty()){
+-            for (Heading wall : space.getWalls()){
+-                switch(wall){
+-                    case EAST:
+-                        //add logic for wall offset and rotation when board is ready
+-                        break;
+-
+-
+-                    case WEST:
+-                        // add logic for wall offset and rotation when board is ready
+-                        break;
+-
+-
+-                    case SOUTH:
+-                        // add logic only for offset, rotation not needed
+-                        break;
+-
+-                    case NORTH:
+-                        // add logic for offse, rotation not needed
+-                        break;
+-                }
+-            }
+-
+-        }
+-    }
+-
+-
+-
+ }
