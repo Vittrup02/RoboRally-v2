@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConveyorBelt extends FieldAction {
 
-    private enum BeltType {
+    public enum BeltType {
         GREEN,  // Moves the robot one space
         BLUE    // Moves the robot two spaces
     }
@@ -16,6 +16,13 @@ public class ConveyorBelt extends FieldAction {
     private Heading heading;
     private int movement;  // Number of spaces to move; 1 for green, 2 for blue
     private BeltType type;
+
+    /**
+     * @author s235112 Tobias Kolstrup Vittrup
+     * Constructor for the ConveyorBelt class.
+     * @param heading The direction the conveyor belt moves in.
+     * @param type The type of conveyor belt.
+     */
 
     public ConveyorBelt(Heading heading, BeltType type) {
         this.heading = heading;
@@ -39,6 +46,19 @@ public class ConveyorBelt extends FieldAction {
         this.type = type;
         this.movement = (type == BeltType.GREEN) ? 1 : 2;  // Update movement when belt type changes
     }
+
+    public int getMovement() {
+        return movement;
+    }
+
+    /**
+     *
+     * @author s235112 Tobias Kolstrup Vittrup
+     * Moves the player on the conveyor belt.
+     * @param gameController The game controller.
+     * @param space The space the player is on.
+     * @return True if the player was moved, false otherwise.
+     */
 
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {
@@ -78,6 +98,7 @@ public class ConveyorBelt extends FieldAction {
 
         // Move the player to the new position
         player.setSpace(space);
+
         return true;
     }
 }

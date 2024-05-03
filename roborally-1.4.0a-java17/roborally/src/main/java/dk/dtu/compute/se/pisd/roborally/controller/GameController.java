@@ -52,7 +52,7 @@ public class GameController {
             Heading heading = player.getHeading();
 
             Space target = board.getNeighbour(space, heading);
-            if (target != null) {
+            if (target!= null) {
                 try {
                     moveToSpace(player, target, heading);
                 } catch (ImpossibleMoveException e) {
@@ -83,6 +83,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Move the player two steps forward.
+     * @param player
+     */
+
     // TODO Assignment A3
     public void fastForward(@NotNull Player player) {
         moveForward(player);
@@ -102,9 +107,9 @@ public class GameController {
     void moveToSpace(@NotNull Player player, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
         assert board.getNeighbour(player.getSpace(), heading) == space; // make sure the move to here is possible in principle
         Player other = space.getPlayer();
-        if (other != null){
+        if (other!= null){
             Space target = board.getNeighbour(space, heading);
-            if (target != null) {
+            if (target!= null) {
                 // XXX Note that there might be additional problems with
                 //     infinite recursion here (in some special cases)!
                 //     We will come back to that!
@@ -116,6 +121,16 @@ public class GameController {
                 assert target.getPlayer() == null : target; // make sure target is free now
             } else {
                 throw new ImpossibleMoveException(player, space, heading);
+            }
+        }
+        ConveyorBelt belt = space.getConveyorBelt();
+        if (belt!= null) {
+            Heading beltHeading = belt.getHeading();
+            for (int i = 0; i < belt.getMovement(); i++) {
+                space = board.getNeighbour(space, beltHeading);
+                if (space == null) {
+                    break;
+                }
             }
         }
         player.setSpace(space);
@@ -239,6 +254,32 @@ public class GameController {
                     break;
                 default:
                     // DO NOTHING (for now)
+            }
+
+            // Check if the player is on a conveyor belt
+            Space space = player.getSpace();
+            ConveyorBelt belt = space.getConveyorBelt();
+            if (belt != null) {
+                // Move the player along the conveyor belt
+                // Use the conveyor belt's heading to determine the direction
+                Heading beltHeading = belt.getHeading();
+                this.moveForwardInDirection(player, beltHeading);
+            }
+        }
+    }
+
+    private void moveForwardInDirection(Player player, Heading heading) {
+        // Similar to the moveForward method, but moves the player in the specified heading
+        if (player.board == board) {
+            Space space = player.getSpace();
+
+            Space target = board.getNeighbour(space, heading);
+            if (target != null) {
+                try {
+                    moveToSpace(player, target, heading);
+                } catch (ImpossibleMoveException e) {
+                    // Handle impossible move exception
+                }
             }
         }
     }

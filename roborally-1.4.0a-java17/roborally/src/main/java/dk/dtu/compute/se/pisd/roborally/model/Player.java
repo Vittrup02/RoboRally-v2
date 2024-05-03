@@ -39,6 +39,8 @@ public class Player extends Subject {
 
     final public Board board;
 
+    public int no;
+
     private String name;
     private String color;
 
@@ -124,6 +126,8 @@ public class Player extends Subject {
             }
         }
     }
+
+
 
     public CommandCardField getProgramField(int i) {
         return program[i];

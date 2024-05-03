@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.ConveyorBelt;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 
 import java.util.ArrayList;
@@ -104,6 +105,24 @@ public class Space extends Subject {
         // also need to update when some player attributes change, the player can
         // notify the space of these changes by calling this method.
         notifyChange();
+    }
+
+    /**
+     * This class is used to add a wall to the space.
+     * @return belt
+     */
+    public ConveyorBelt getConveyorBelt() {
+
+        ConveyorBelt belt = null;
+
+        for (FieldAction action : this.actions) {
+            if (action instanceof ConveyorBelt && belt == null) {
+                belt = (ConveyorBelt) action;
+            }
+        }
+
+        return belt;
+
     }
 
 }
