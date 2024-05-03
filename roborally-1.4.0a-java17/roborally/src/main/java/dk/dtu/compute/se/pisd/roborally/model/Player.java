@@ -39,8 +39,6 @@ public class Player extends Subject {
 
     final public Board board;
 
-    public int no;
-
     private String name;
     private String color;
 
@@ -49,6 +47,9 @@ public class Player extends Subject {
 
     private CommandCardField[] program;
     private CommandCardField[] cards;
+
+    private Command lastCommand;
+    private int energyCubes = 0;  // Initialize energy cubes to zero
 
     public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
@@ -127,7 +128,22 @@ public class Player extends Subject {
         }
     }
 
+    public void addEnergyCube() {
+        this.energyCubes++;
+        notifyChange();  // Notify observers that the player's energy cube count has changed
+    }
 
+    public int getEnergyCubes() {
+        return this.energyCubes;
+    }
+
+    public void setLastCommand(Command command) {
+        this.lastCommand = command;
+    }
+
+    public Command getLastCommand() {
+        return this.lastCommand;
+    }
 
     public CommandCardField getProgramField(int i) {
         return program[i];

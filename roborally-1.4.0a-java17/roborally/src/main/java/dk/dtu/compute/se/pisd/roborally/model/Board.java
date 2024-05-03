@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -89,6 +90,8 @@ public class Board extends Subject {
     public int getHeight() {
         return height;
     }
+
+    public List<Player> getPlayers() {return players;}
 
     public Space getSpace(int x, int y) {
         if (x >= 0 && x < width &&
