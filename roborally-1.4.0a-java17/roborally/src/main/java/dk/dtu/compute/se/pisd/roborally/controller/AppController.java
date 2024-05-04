@@ -139,7 +139,7 @@ public class AppController implements Observer {
     public void loadGame() {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
-        String dirkteryPath = "roborally-1.4.0a-java17/roborally/src/main/resources/boards";
+        String dirkteryPath = "target/classes/boards/games";
         Path dirktery = Paths.get(dirkteryPath);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirktery)) {
