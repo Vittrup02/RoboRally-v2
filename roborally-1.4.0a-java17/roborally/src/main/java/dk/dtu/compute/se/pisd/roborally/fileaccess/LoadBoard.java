@@ -21,8 +21,6 @@
  */
 package dk.dtu.compute.se.pisd.roborally.fileaccess;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -191,8 +189,7 @@ public class LoadBoard {
         // TODO: this is not very defensive, and will result in a NullPointerException
         //       when the folder "resources" does not exist! But, it does not need
         //       the file "simpleCards.json" to exist!
-        String filename =
-                "roborally-1.4.0a-java17/roborally/src/main/resources/boards/games" + "/" + name + "." + JSON_EXT;
+        String filename = classLoader.getResource(BOARDSFOLDER).getPath() + "/games/" + name + "." + JSON_EXT;
 
         // In simple cases, we can create a Gson object with new:
         //
@@ -215,6 +212,7 @@ public class LoadBoard {
             writer.close();
         } catch (IOException e1) {
             if (writer != null) {
+                System.out.println(e1.getMessage());
                 try {
                     writer.close();
                     fileWriter = null;

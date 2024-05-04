@@ -139,8 +139,7 @@ public class AppController implements Observer {
     public void loadGame() {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
-        String dirkteryPath = "roborally-1.4.0a-java17/roborally/src/main/resources/boards/games";
-
+        String dirkteryPath = "roborally-1.4.0a-java17/roborally/src/main/resources/boards";
         Path dirktery = Paths.get(dirkteryPath);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirktery)) {
@@ -157,14 +156,14 @@ public class AppController implements Observer {
             Optional<String> boardname = saveGames.showAndWait();
             String boardsname = boardname.get();
 
-            Board board = loadBoard("games/" +boardsname);
+            Board board = loadBoard("games/" + boardsname);
             gameController = new GameController(board);
 
             roboRally.createBoardView(gameController);
 
         }
         catch (IOException e1){
-            System.out.println("Error");
+            System.out.println(e1.getMessage());
         }
     }
 
