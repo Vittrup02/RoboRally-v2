@@ -29,7 +29,7 @@ public class PlayerTemplate {
         this.y = player.getSpace().y;
 
         for (int i = 0; i<Player.NO_REGISTERS; i++){
-            this.programmingCards.add(new CommandCardFieldTemplate(player.getCardField(i)));
+            this.programmingCards.add(new CommandCardFieldTemplate(player.getProgramField(i)));
         }
 
         for (int i = 0; i<Player.NO_CARDS; i++){
